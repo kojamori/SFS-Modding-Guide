@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunksfs_modding_docs=globalThis.webpackChunksfs_modding_docs||[]).push([[1903],{1912(s){s.exports=JSON.parse('{"blogBasePath":"/SFS-Modding-Guide/blog","blogTitle":"Blog","authorsListPath":"/SFS-Modding-Guide/blog/authors"}')}}]);
