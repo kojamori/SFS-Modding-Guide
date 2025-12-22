@@ -104,7 +104,7 @@ const config: Config = {
           items: [
             {
               label: "Getting Started",
-              to: "/docs/getting-started/intro/Introduction",
+              to: "/docs/getting-started/introduction",
             },
             {
               label: "Conventions and Style Guide",
