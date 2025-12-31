@@ -2,11 +2,11 @@ import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+import site_config from "./config/site-config";
 
 const config: Config = {
-  title: "SFS Modding Guide",
-  tagline: "A comprehensive guide to modding Spaceflight Simulator",
+  title: site_config.projectName,
+  tagline: site_config.projectTagline,
   favicon: "img/favicon.ico",
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -36,49 +36,50 @@ const config: Config = {
     locales: ["en"],
   },
 
-  headTags: [
-    {
-      tagName: "meta",
-      attributes: {
-        name: "google-site-verification",
-        content: "I3wDwZMuJdx_OvCHIL6KIW8wf6BwmkOZpx_Cci_Ol1w",
-      },
-    },
-  ],
+  headTags: site_config.headTags,
 
   presets: [
     [
       "classic",
       {
-        docs: {
-          sidebarPath: "./sidebars.ts",
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
-        },
-        // blog: {
-        //   showReadingTime: true,
-        //   feedOptions: {
-        //     type: ["rss", "atom"],
-        //     xslt: true,
-        //   },
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl:
-        //     "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
-        //   // Useful options to enforce blogging best practices
-        //   onInlineTags: "warn",
-        //   onInlineAuthors: "warn",
-        //   onUntruncatedBlogPosts: "warn",
-        // },
+        docs: false,
         theme: {
           customCss: "./src/css/custom.css",
         },
-        gtag: {
-          trackingID: "I3wDwZMuJdx_OvCHIL6KIW8wf6BwmkOZpx_Cci_Ol1w",
-        },
       } satisfies Preset.Options,
+    ],
+  ],
+
+  plugins: [
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "default", // Default ID
+        path: "instances/docs", // Source folder
+        routeBasePath: "docs", // URL route (e.g., /docs/intro)
+        sidebarPath: "./sidebars.ts",
+        editUrl: "https://github.com/kojamori/SFS-Modding-Guide/edit/main",
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "internal", // Unique ID for the second instance
+        path: "instances/internal-docs", // Source folder
+        routeBasePath: "internal", // URL route (e.g., /api/intro)
+        sidebarPath: "./sidebars.ts",
+        editUrl: "https://github.com/kojamori/SFS-Modding-Guide/edit/main",
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "api", // Unique ID for the second instance
+        path: "instances/api", // Source folder
+        routeBasePath: "api", // URL route (e.g., /api/intro)
+        sidebarPath: "./sidebars.ts",
+        editUrl: "https://github.com/kojamori/SFS-Modding-Guide/edit/main",
+      },
     ],
   ],
 
@@ -97,13 +98,26 @@ const config: Config = {
       items: [
         {
           type: "docSidebar",
-          sidebarId: "tutorialSidebar",
+          sidebarId: "docsSidebar",
           position: "left",
-          label: "Documentation",
+          label: "Guide",
         },
-        // { to: "/blog", label: "Blog", position: "left" },
         {
-          href: "https://github.com/kojamori/SFS-Modding-Guide",
+          type: "docSidebar",
+          sidebarId: "apiSidebar",
+          docsPluginId: "api",
+          position: "left",
+          label: "API Reference",
+        },
+        {
+          type: "docSidebar",
+          sidebarId: "internalSidebar",
+          docsPluginId: "internal",
+          position: "right",
+          label: "Internal Documentation",
+        },
+        {
+          href: site_config.projectRepo,
           label: "GitHub",
           position: "right",
         },
@@ -117,11 +131,15 @@ const config: Config = {
           items: [
             {
               label: "Getting Started",
-              to: "/docs/getting-started/introduction",
+              to: "docs/getting-started/introduction",
             },
             {
               label: "Conventions and Style Guide",
-              to: "/docs/category/conventions-and-style-guide/",
+              to: "docs/category/conventions-and-style-guide/",
+            },
+            {
+              label: "Installing Mods",
+              to: "docs/getting-started/installation/",
             },
           ],
         },
@@ -129,34 +147,36 @@ const config: Config = {
           title: "Community",
           items: [
             {
-              label: "Forums",
-              href: "https://jmnet.one/sfs/forum/index.php",
+              label: "SFS Forums",
+              href: site_config.socials.sfsForums,
             },
             {
-              label: "Discord",
-              href: "https://discord.com/invite/hwfWm2d",
+              label: "SFS Official Discord",
+              href: site_config.socials.sfsOfficialDiscord,
             },
             {
-              label: "Reddit",
-              href: "https://www.reddit.com/r/SpaceflightSimulator/",
+              label: "SFS Reddit",
+              href: site_config.socials.sfsReddit,
             },
           ],
         },
         {
           title: "More",
           items: [
-            // {
-            //   label: "Blog",
-            //   to: "/blog",
-            // },
             {
               label: "GitHub",
-              href: "https://github.com/kojamori/SFS-Modding-Guide",
+              href: site_config.socials.github,
+            },
+            {
+              label: "Modding Discord",
+              href: site_config.socials.discord,
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} SFS Modding Guide. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} ${
+        site_config.projectName
+      }. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
