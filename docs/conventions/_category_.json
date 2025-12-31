@@ -1,8 +1,0 @@
-{
-  "label": "Conventions and Style Guide",
-  "position": 2,
-  "link": {
-    "type": "generated-index",
-    "description": "This section covers the conventions and style guide for SFS modding, from naming conventions, to project structure and coding standards, etc."
-  }
-}
