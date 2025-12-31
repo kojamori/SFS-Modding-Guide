@@ -9,5 +9,5 @@ This section outlines the conventions and best practices used in the SFS Modding
 
 ## Table of Contents
 
-- [Naming and Organisation Conventions](naming-and-organisation)
-- [Presenting Your Mod](presenting-your-mod)
+- [Naming and Organisation Conventions](docs/conventions/naming-and-organisation)
+- [Presenting Your Mod](docs/conventions/presenting-your-mod)

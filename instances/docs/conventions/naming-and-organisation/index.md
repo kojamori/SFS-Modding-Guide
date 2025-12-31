@@ -8,6 +8,6 @@ This document outlines the naming and organisation conventions used in this proj
 
 # Table of Contents
 
-- [Code Mod Conventions](code-mod-conventions)
-- [Texture Pack Conventions](texture-pack-conventions)
-- [Part Pack Conventions](part-pack-conventions)
+- [Code Mod Conventions](docs/conventions/code-mod-conventions)
+- [Texture Pack Conventions](docs/conventions/texture-pack-conventions)
+- [Part Pack Conventions](docs/conventions/part-pack-conventions)

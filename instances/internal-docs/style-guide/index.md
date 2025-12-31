@@ -57,4 +57,4 @@ This style guide provides guidelines and best practices for writing and formatti
 
 ## API Documentation Guidelines
 
-TBD. See [API Documentation Pipeline](api-documentation-pipeline) for more information.
+TBD. See [API Documentation Pipeline](internal/api-documentation-pipeline) for more information.

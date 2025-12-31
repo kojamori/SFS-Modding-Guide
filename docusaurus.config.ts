@@ -135,7 +135,7 @@ const config: Config = {
             },
             {
               label: "Conventions and Style Guide",
-              to: "docs/category/conventions-and-style-guide/",
+              to: "docs/conventions",
             },
             {
               label: "Installing Mods",
