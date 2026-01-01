@@ -1,0 +1,101 @@
+# Adding Links
+
+This tutorial will guide you through adding hyperlinks to your documentation. Links connect related content, provide references, and enhance navigation.
+
+## Step 1: Identify the Link Target
+
+Determine what you want to link to:
+
+- An external website
+- Another section in the same document
+- A different document in your project
+
+## Step 2: Adding the Link
+
+Use this Markdown syntax:
+
+```
+[Link Text](URL)
+```
+
+Replace `Link Text` with your display text and `URL` with the target path.
+
+### External Links
+
+Link to external websites using the full URL:
+
+```markdown
+[Visit Team Curiosity](https://teamcuriosity.com)
+```
+
+### Internal Links
+
+Link to other documents using relative paths or slugs. Slugs are URL-friendly versions of document titles (lowercase, hyphen-separated).
+
+The default slug is `(routeBasePath)/(file-path)`. Documents with `index.mdx` files use only their folder path as the slug.
+
+**Examples:**
+
+```markdown
+[Getting Started Guide](/getting-started)
+[Texture Pack Quickstart](/getting-started/quickstart/texture-pack)
+```
+
+:::info[Further Reading]
+See the [Architecture](../architecture) page for details on documentation structure, or refer to the [Docusaurus Linking Documentation](https://docusaurus.io/docs/markdown-features/links) for advanced options.
+:::
+
+## Practical Examples
+
+### Linking Within the Same Instance
+
+Current location: `internal-docs/tutorials/adding-links.mdx`
+
+To link to `internal-docs/architecture.mdx`, use a relative path from the `tutorials` folder:
+
+```markdown
+[Documentation Architecture](../architecture)
+```
+
+Result: [Documentation Architecture](../architecture)
+
+### Linking Across Instances
+
+To link to `docs/getting-started/index.mdx` from any instance, use an absolute path from the site root:
+
+```markdown
+[Getting Started Guide](/getting-started)
+```
+
+Result: [Getting Started Guide](/getting-started)
+
+**Note:** The `docs` instance has an empty base route path, so use `/getting-started` directly, along with any other page you want to reference from it.  
+The leading `/` indicates the site root.
+
+### Linking from Index Files
+
+For `index.mdx` files, the working directory is the parent folder:
+
+```
+parentFolder/
+  folder/
+    index.mdx  # working directory is parentFolder
+  folder2/
+    page.mdx
+```
+
+From `index.mdx` to `page.mdx`:
+
+```markdown
+[Folder2 Page](folder2/page)
+```
+
+### Linking to the Home Page
+
+To link to the documentation landing page:
+
+```markdown
+[SFS Modding Guide Home](/)
+```
+
+Result: [SFS Modding Guide Home](/)
