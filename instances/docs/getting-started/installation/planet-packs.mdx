@@ -1,0 +1,70 @@
+import Figure from "@site/src/components/Figure";
+import site_config from "@site/config/site-config";
+
+# Installing Planet Packs
+
+:::warning[Compatibility Warning]
+Modding support in Spaceflight Simulator (SFS) is primarily designed for the PC version of the game.
+While asset mods (such as texture packs, part packs and planet packs) are supported on mobile versions (Android only as of 1.6.0.3), code mods (DLL mods) are only supported on the PC version due to platform limitations.
+:::
+
+:::info[DLC Requirements]
+Mobile versions require the full expansion bundle to use mods.
+This can either be done by purchasing each DLC individually or by purchasing the "Full Bundle".
+Steam versions do not require any any DLCs to use mods, because all expansions are included with the base game on Steam when purchased.
+
+Prices for the game and expansions may vary by region and platform.
+:::
+
+Planet packs, also known as custom solar systems, are a type of asset mod that add new planets, moons, and other celestial bodies to Spaceflight Simulator (SFS).
+
+They come in the form of `.zip` archive files, that when extracted, have contain the following directory and file structure:
+
+```
+MyPlanetPack.zip/
+  Heightmap Data/
+  Planet Data/
+  Texture Data/
+  Import_Settings.txt (JSON)
+  Space_Center_Data.txt (JSON)
+  Version.txt (JSON)
+```
+
+## Finding and Downloading Planet Packs
+
+You can find all authorised planet packs from the [SFS Forums](https://jmnet.one/sfs/forum/index.php?forums/planets-and-worlds.98/).
+
+<Figure
+  src="/gallery/jmnet_planet_packs_section.png"
+  caption="Planet Packs Section on SFS Forums"
+  alt="Screenshot showing the Planets and Worlds section of the SFS Forums where planet packs can be found."
+  widthpercent="100"
+></Figure>
+
+For more sources of mods, refer to [this section of the Mod Installation](.#finding-mods) guide.
+
+To download a planet pack, simply download the `.zip` file of the planet pack you want to install to your computer or device.
+Typically, this is a link on the post, or on the Releases section if the planet pack is hosted on GitHub.
+
+## Installation
+
+First, you need to find your SFS game folder. The location of the game folder varies depending on your platform. Refer to the [Mod Installation](.) guide for detailed instructions on locating your game folder.
+Once you have located your SFS game folder, follow these steps to install a planet pack:
+
+1. Place the entire `.zip` file of the planet pack into the `Mods/Custom Assets/Custom Solar Systems` folder.
+2. Extract the contents of the `.zip` file directly into the `Mods/Custom Assets/Custom Solar Systems` folder. Ensure that the folder structure is maintained as shown above.
+3. Launch Spaceflight Simulator. The game should automatically detect and load the planet pack.
+4. Enable the planet pack in the game's settings menu under the "Mods" section.
+
+## Teleport Cheat
+
+To quickly access planets from a planet pack, you can use the teleport cheat feature in Spaceflight Simulator. Follow these steps:
+
+1. Open the pause menu while in-game.
+2. Select the "Cheats" option.
+3. Enable then use the "Teleport" cheat.
+4. A list of all available planets, including those from the installed planet packs, will be displayed.
+5. Select the desired planet from the list to teleport to it.
+
+- You can choose what type of teleport you want to do, either "Surface" or "Orbit".
+-
