@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunksfs_modding_docs=globalThis.webpackChunksfs_modding_docs||[]).push([[600],{7146(s){s.exports=JSON.parse('{"name":"docusaurus-plugin-content-docs","id":"api"}')}}]);
