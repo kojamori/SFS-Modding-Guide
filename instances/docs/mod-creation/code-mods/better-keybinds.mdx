@@ -291,11 +291,11 @@ private static void ExampleAction()
 
 Whenever the configured key combination is pressed, `ExampleAction()` will be called.
 
-### Builder and World keybinds
+### Build and World keybinds
 
 For keybinds that only apply to a particular scene, use the corresponding method.
 
-Builder:
+Build:
 
 ```csharp
 AddOnKeyDown_Build(
@@ -494,14 +494,24 @@ public class Keybindings : ModKeybindings
         // Your code here, a keybind that will always be active
     }
 
+    private static void ExampleBuildAction()
+    {
+        // Your code here, a keybind that will always be active
+    }
+
+    private static void ExampleWorldAction()
+    {
+        // Your code here, a keybind that will always be active
+    }
+
     private static void OnBuildSceneLoaded() 
     {
-      // Your code here, a keybind exclusive to the build menu
+        AddOnKeyDown_Build(instance.exampleBuildAction, ExampleBuildAction)
     }
 
     private static void OnWorldSceneLoaded()
     {
-        // Your code here, a keybind exclusive to the world scene, i.e. launched rockets
+        AddOnKeyDown_World(instance.exampleWorldAction, ExampleWorldAction)
     }
 }
 ```
