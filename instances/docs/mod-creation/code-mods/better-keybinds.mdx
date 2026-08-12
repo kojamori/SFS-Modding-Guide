@@ -47,7 +47,7 @@ If you don't know how to install code mods, follow this [guide](../../getting-st
 
 After you've installed it, you want to add a reference to the BetterKeybinds assembly in your own project.
 
-If you're using the SFS Code Mod Template, insert this code block into the references `ItemGroup` in the `.csproj`:
+If you're using the [SFS Code Mod Template](https://github.com/kojamori/SFS-Code-Mod-Template), insert this code block into the references `ItemGroup` in the `.csproj`:
 ```xml
 <Reference Include="BetterKeybinds" Condition="Exists('$(ModsFolder)/BetterKeybinds')">
   <HintPath>$(ModsFolder)/BetterKeybinds/BetterKeybinds.dll</HintPath>
