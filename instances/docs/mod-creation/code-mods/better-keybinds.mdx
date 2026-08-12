@@ -1,0 +1,557 @@
+---
+description: This guide explains how to use the BetterKeybinds mod to add custom keybinds to your own mod.
+---
+
+
+# Adding Keybinds to a Mod with BetterKeybinds
+
+:::warning[Assumed Knowledge]
+This guide assumes you have basic knowledge of developing SFS code mods, such as:
+- Harmony patching
+- SFS APIs
+- C#/.NET
+- etc
+:::
+
+
+[BetterKeybinds](https://github.com/kojamori/BetterKeybinds) is a new mod released by kojamori that adds additional modifiers to keybinds.
+Previously, SFS only supported the "Ctrl" modifier, which also did not distinguish between the left and right control keys.
+
+BetterKeybinds can be used by other mods as a dependency to add advanced customisable keybinds.
+
+## Setup
+First, add BetterKeybinds as a dependency to your mod in `Dictionary<string, string> Mod.Dependencies`. 
+The version should be the latest version, which is 2.0.0 at the time of writing.
+
+e.g.
+
+```csharp
+public class Main : Mod
+{
+    // ...
+    
+    public override Dictionary<string, string> Dependencies => new Dictionary<string, string>()
+    {
+        { "BetterKeybinds", "2.0.0" }
+    };
+
+    // ...
+}
+```
+
+Then, install the [latest BetterKeybinds release](https://github.com/kojamori/BetterKeybinds/releases/latest).
+
+:::note[Installing Code Mods]
+If you don't know how to install code mods, follow this [guide](../../getting-started/installation/code-mods.mdx).
+:::
+
+After you've installed it, you want to add a reference to the BetterKeybinds assembly in your own project.
+
+If you're using the SFS Code Mod Template, insert this code block into the references `ItemGroup` in the `.csproj`:
+```xml
+<Reference Include="BetterKeybinds" Condition="Exists('$(ModsFolder)/BetterKeybinds')">
+  <HintPath>$(ModsFolder)/BetterKeybinds/BetterKeybinds.dll</HintPath>
+  <Private>false</Private>
+</Reference>
+```
+
+then save the modified `.csproj`. Reload your project if you don't see it in the list of references in your IDE.
+
+## Step 1. Create a keybindings class
+
+Create a class that inherits from `ModLoader.ModKeybindings`.
+
+This class contains your mod's keybinds and defines how they appear in SFS's keybinding menu.
+
+```csharp
+using BetterKeybinds;
+using ModLoader;
+using UnityEngine;
+
+namespace ExampleMod;
+
+public class Keybindings : ModKeybindings
+{
+    private static Keybindings instance;
+
+    public CustomKey exampleAction = KeyCode.F5;
+
+    public override void CreateUI()
+    {
+        
+    }
+
+    public static void LoadKeybindings()
+    {
+        instance = SetupKeybindings<Keybindings>(Main.Instance);
+    }
+}
+```
+
+The important part is the `CustomKey` field:
+
+```csharp
+public CustomKey exampleAction = KeyCode.F5;
+```
+
+`CustomKey` inherits from SFS's normal `KeybindingsPC.Key` type, while adding support for individual left/right Ctrl, Shift, and Alt modifiers.
+
+You can define as many keybinds as your mod needs:
+
+```csharp
+public CustomKey firstAction = KeyCode.F5;
+public CustomKey secondAction = KeyCode.F6;
+public CustomKey thirdAction = KeyCode.G;
+```
+
+Note that you can create a CustomKey easily using its implicit constructor, by setting the value to a keycode.
+
+### Loading the keybindings
+
+Call `SetupKeybindings<T>()` to load your keybindings.
+
+```csharp
+instance = SetupKeybindings<Keybindings>(Main.Instance);
+```
+
+This loads the saved keybindings.
+
+In your Main.cs, set your mod's `LoadKeybindings` action to `Keybindings.LoadKeybindings`. This causes SFS to load your keybindings when your mod loads.
+
+e.g.
+
+```csharp
+public class Main : Mod
+{
+    // ...
+    
+    public override Dictionary<string, string> Dependencies => new Dictionary<string, string>()
+    {
+        { "BetterKeybinds", "1.2.0" }
+    };
+
+    public override Action LoadKeybindings => ExampleMod.Keybindings.LoadKeybindings; 
+
+    // ...
+}
+```
+
+
+---
+
+## Step 2. Add the keybind to the settings menu
+
+Override `CreateUI()` and call `CreateUI_Keybinding()` for each keybind.
+
+```csharp
+public override void CreateUI()
+{
+    CreateUI_Text("Example Mod");
+
+    CreateUI_Keybinding(
+        exampleAction,
+        exampleAction.Clone(),
+        "Example Action"
+    );
+}
+```
+
+`CreateUI_Keybinding()` takes three arguments:
+
+```text
+Current keybind
+Default key
+Display name
+```
+
+The second argument is the default keybind. 
+Use `.Clone()` when the default should be the same CustomKey value as the initial value of the field.
+This gives the UI its own copy rather than passing the same object as both the current and default keybind.
+
+Whatever you do, ensure that the type of the keybind is a `CustomKey`, **NOT** a `SFS.Input.PCKeybindings.Key`.
+Passing a KeyCode directly as the default key will use the implicit conversion to SFS.Input.PCKeybindings.Key, so instantiate a CustomKey explicitly when the default needs BetterKeybinds-specific modifiers.
+
+For example:
+
+```csharp
+CreateUI_Keybinding(
+    exampleAction,
+    exampleAction.Clone(),
+    "Example Action"
+);
+```
+
+Here:
+
+* `exampleAction` is the current keybind.
+* `exampleAction.Clone()` is the default key.
+* `"Example Action"` is displayed in the settings menu.
+
+You can add multiple keybinds:
+
+```csharp
+public override void CreateUI()
+{
+    CreateUI_Text("Example Mod");
+
+    CreateUI_Keybinding(
+        firstAction,
+        firstAction.Clone(),
+        "First Action"
+    );
+
+    CreateUI_Keybinding(
+        secondAction,
+        secondAction.Clone(),
+        "Second Action"
+    );
+}
+```
+
+Remember to add your keybindings as `public CustomKey` fields to your `Keybindings` class.
+
+Use `CreateUI_Space()` to separate groups of keybinds:
+
+```csharp
+public override void CreateUI()
+{
+    CreateUI_Text("Example Mod");
+
+    CreateUI_Keybinding(
+        firstAction,
+        firstAction.Clone(),
+        "First Action"
+    );
+
+    CreateUI_Keybinding(
+        secondAction,
+        secondAction.Clone(),
+        "Second Action"
+    );
+
+    CreateUI_Space();
+
+    CreateUI_Text("Other");
+
+    CreateUI_Keybinding(
+        thirdAction,
+        thirdAction.Clone(),
+        "Third Action"
+    );
+}
+```
+
+### Using `Clone()`
+
+`CustomKey.Clone()` creates an independent copy of a keybind.
+
+This is useful when passing a keybind as its own default value:
+
+```csharp
+CreateUI_Keybinding(
+    exampleAction,
+    exampleAction.Clone(),
+    "Example Action"
+);
+```
+
+---
+
+## Step 3. Register the keybind
+
+Adding a keybind to the settings menu does **not** make it perform an action.
+
+Register it using `AddOnKeyDown(I_Key key, Action onKeyDown)`:
+
+```csharp
+AddOnKeyDown(
+    instance.exampleAction,
+    ExampleAction
+);
+```
+
+For example:
+
+```csharp
+public static void LoadKeybindings()
+{
+    instance = SetupKeybindings<Keybindings>(Main.Instance);
+
+    AddOnKeyDown(
+        instance.exampleAction,
+        ExampleAction
+    );
+}
+
+private static void ExampleAction()
+{
+    // Your code here
+}
+```
+
+Whenever the configured key combination is pressed, `ExampleAction()` will be called.
+
+### Builder and World keybinds
+
+For keybinds that only apply to a particular scene, use the corresponding method.
+
+Builder:
+
+```csharp
+AddOnKeyDown_Build(
+    instance.exampleAction,
+    ExampleAction
+);
+```
+
+World:
+
+```csharp
+AddOnKeyDown_World(
+    instance.exampleAction,
+    ExampleAction
+);
+```
+
+These should be registered when the corresponding scene is loaded.
+
+For example:
+
+```csharp
+public static void LoadKeybindings()
+{
+    instance = SetupKeybindings<Keybindings>(Main.Instance);
+
+    AddOnKeyDown(
+        instance.exampleAction,
+        ExampleAction
+    );
+
+    ModLoader.Helpers.SceneHelper.OnBuildSceneLoaded += OnBuildSceneLoaded;
+    ModLoader.Helpers.SceneHelper.OnWorldSceneLoaded += OnWorldSceneLoaded;
+}
+
+```
+
+```csharp
+private static void OnBuildSceneLoaded()
+{
+    AddOnKeyDown_Build(
+        instance.exampleAction,
+        ExampleAction
+    );
+}
+
+private static void OnWorldSceneLoaded()
+{
+    AddOnKeyDown_World(
+        instance.exampleAction,
+        ExampleAction
+    );
+}
+```
+
+---
+
+## Step 4. Use modifier combinations
+
+`CustomKey` supports individual left and right modifiers.
+
+For example:
+
+```csharp
+public CustomKey exampleAction = new CustomKey(KeyCode.C, leftCtrl: true, leftShift: true);
+```
+
+This represents:
+
+```text
+Left Ctrl + Left Shift + C
+```
+
+Right-side modifiers can also be specified independently:
+
+```csharp
+public CustomKey exampleAction = new CustomKey(KeyCode.C, rightCtrl: true, rightAlt: true);
+```
+
+This represents:
+
+```text
+Right Ctrl + Right Alt + C
+```
+
+You can combine any supported modifiers:
+
+```csharp
+public CustomKey exampleAction = new CustomKey(KeyCode.C, leftCtrl: true, rightCtrl: true, leftShift: true, rightAlt: true);
+```
+
+This allows combinations that the vanilla SFS keybinding system cannot represent.
+
+
+A CustomKey can also use a modifier by itself, without a regular key, allowing bindings such as Left Ctrl, Right Shift, or Left Alt to be assigned standalone.
+
+e.g.
+
+```csharp
+public CustomKey exampleAction = KeyCode.LeftControl;
+```
+
+representing:
+```
+Left Control
+```
+
+---
+
+## Step 5. Saving and loading
+
+You do **not** need to implement your own saving or loading system.
+
+`ModKeybindings` already handles persistence through the mod's `keybindings.txt`.
+
+When a player changes a keybind, the existing keybinding system saves it automatically.
+
+Simply declare your `CustomKey` fields:
+
+```csharp
+public CustomKey exampleAction = KeyCode.F5;
+```
+
+and expose them with:
+
+```csharp
+CreateUI_Keybinding(
+    exampleAction,
+    exampleAction.Clone(),
+    "Example Action"
+);
+```
+
+The configured keybind will be loaded automatically the next time the mod starts.
+
+---
+
+## Complete example
+
+A minimal implementation looks like this:
+
+```csharp
+using BetterKeybinds;
+using ModLoader;
+using ModLoader.Helpers;
+using UnityEngine;
+
+namespace ExampleMod;
+
+public class Keybindings : ModKeybindings
+{
+    private static Keybindings instance;
+
+    public CustomKey exampleAction = KeyCode.F5;
+    public CustomKey exampleBuildAction = new CustomKey(KeyCode.F5, leftCtrl: true);
+    public CustomKey exampleWorldAction = new CustomKey(KeyCode.F5, leftShift: true);
+
+    public override void CreateUI()
+    {
+        CreateUI_Text("Example Mod");
+
+        CreateUI_Keybinding(
+            exampleAction,
+            exampleAction.Clone(),
+            "Example Action"
+        );
+
+        CreateUI_Keybinding(
+          exampleBuildAction,
+          exampleBuildAction.Clone(),
+          "Example Build Action"
+        );
+
+        CreateUI_Keybinding(
+          exampleWorldAction,
+          exampleWorldAction.Clone(),
+          "Example World Action"
+        );
+    }
+
+    public static void LoadKeybindings()
+    {
+        instance = SetupKeybindings<Keybindings>(Main.Instance);
+
+        AddOnKeyDown(
+            instance.exampleAction,
+            ExampleAction
+        );
+
+        SceneHelper.OnBuildSceneLoaded += OnBuildSceneLoaded;
+        SceneHelper.OnWorldSceneLoaded += OnWorldSceneLoaded;
+    }
+
+    private static void ExampleAction()
+    {
+        // Your code here, a keybind that will always be active
+    }
+
+    private static void OnBuildSceneLoaded() 
+    {
+      // Your code here, a keybind exclusive to the build menu
+    }
+
+    private static void OnWorldSceneLoaded()
+    {
+        // Your code here, a keybind exclusive to the world scene, i.e. launched rockets
+    }
+}
+```
+
+and the Main.cs file:
+```csharp
+using System;
+using ModLoader;
+using ModLoader.Helpers;
+
+namespace ExampleMod
+{
+    public class Main : Mod
+    {
+        public static Main Instance { get; private set; }
+        public Main()
+        {
+            Instance = this;
+        }
+
+        public override string ModNameID => "ExampleMod";
+        public override string DisplayName => "Example Mod";
+        public override string Author => "kojamori";
+        public override string MinimumGameVersionNecessary => "1.6.00.16";
+        public override string ModVersion => "1.0.0";
+        public override string Description => "";
+
+        public override Dictionary<string, string> Dependencies => new Dictionary<string, string>()
+        {
+            { "BetterKeybinds", "2.0.0" }
+        };
+
+        public override Action LoadKeybindings => Keybindings.LoadKeybindings;
+
+        public override void Early_Load()
+        {
+        }
+
+        public override void Load()
+        {
+
+        }
+    }
+}
+```
+
+
+
+Once this is set up, players can configure your mod's keybinds through the normal SFS keybinding interface, including BetterKeybinds' extended modifier combinations.
+  
+## Real Example
+To see how a published mod uses BetterKeybinds successfully, you can checkout:
+- https://github.com/kojamori/NoRocketColliders
