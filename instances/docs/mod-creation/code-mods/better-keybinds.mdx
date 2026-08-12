@@ -106,6 +106,10 @@ public CustomKey thirdAction = KeyCode.G;
 
 Note that you can create a CustomKey easily using its implicit constructor, by setting the value to a keycode.
 
+:::note[Unity KeyCodes]
+Find all valid Unity input KeyCodes [here](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/KeyCode.html).
+:::
+
 ### Loading the keybindings
 
 Call `SetupKeybindings<T>()` to load your keybindings.
@@ -291,11 +295,11 @@ private static void ExampleAction()
 
 Whenever the configured key combination is pressed, `ExampleAction()` will be called.
 
-### Builder and World keybinds
+### Build and World keybinds
 
 For keybinds that only apply to a particular scene, use the corresponding method.
 
-Builder:
+Build:
 
 ```csharp
 AddOnKeyDown_Build(
@@ -494,14 +498,24 @@ public class Keybindings : ModKeybindings
         // Your code here, a keybind that will always be active
     }
 
+    private static void ExampleBuildAction()
+    {
+        // Your code here, a keybind that will always be active
+    }
+
+    private static void ExampleWorldAction()
+    {
+        // Your code here, a keybind that will always be active
+    }
+
     private static void OnBuildSceneLoaded() 
     {
-      // Your code here, a keybind exclusive to the build menu
+        AddOnKeyDown_Build(instance.exampleBuildAction, ExampleBuildAction)
     }
 
     private static void OnWorldSceneLoaded()
     {
-        // Your code here, a keybind exclusive to the world scene, i.e. launched rockets
+        AddOnKeyDown_World(instance.exampleWorldAction, ExampleWorldAction)
     }
 }
 ```
