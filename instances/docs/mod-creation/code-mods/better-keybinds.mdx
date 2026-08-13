@@ -112,7 +112,7 @@ Find all valid Unity input KeyCodes [here](https://docs.unity3d.com/6000.0/Docum
 
 ### Loading the keybindings
 
-Call `SetupKeybindings<T>()` to load your keybindings.
+Call `SetupKeybindings<T>(Mod mod)` to load your keybindings, with the type parameter as the keybindings class you made, and the mod parameter being your mod's entrypoint inheriting from `ModLoader.Mod`.
 
 ```csharp
 instance = SetupKeybindings<Keybindings>(Main.Instance);
