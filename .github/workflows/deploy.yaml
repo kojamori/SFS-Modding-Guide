@@ -1,0 +1,27 @@
+name: deploy on main
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: install dependencies
+        run: npm ci
+        
+      - name: deploy
+        run: npm run deploy

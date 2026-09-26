@@ -4,12 +4,10 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "generate-manifest": "node scripts/generate-namespace-manifest.js",
-    "generate-file-structure": "tsx scripts/file_structure_creator.ts",
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "dotenv docusaurus deploy",
+    "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
@@ -32,7 +30,6 @@
     "@docusaurus/tsconfig": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
     "@types/node": "^25.0.3",
-    "dotenv-cli": "^11.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "~5.6.2"
