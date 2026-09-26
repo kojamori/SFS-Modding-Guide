@@ -25,3 +25,7 @@ jobs:
         
       - name: deploy
         run: npm run deploy
+        env:
+          GIT_USER: ${{ github.actor }}
+          GIT_PASS: ${{ secrets.GITHUB_TOKEN }}
+        
