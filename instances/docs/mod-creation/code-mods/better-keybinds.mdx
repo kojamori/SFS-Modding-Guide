@@ -70,9 +70,9 @@ using UnityEngine;
 
 namespace ExampleMod;
 
-public class Keybindings : ModKeybindings
+public class ExampleModKeybindings : ModKeybindings
 {
-    private static Keybindings instance;
+    private static ExampleModKeybindings instance;
 
     public CustomKey exampleAction = KeyCode.F5;
 
@@ -83,7 +83,7 @@ public class Keybindings : ModKeybindings
 
     public static void LoadKeybindings()
     {
-        instance = SetupKeybindings<Keybindings>(Main.Instance);
+        instance = SetupKeybindings<ExampleModKeybindings>(Main.Instance);
     }
 }
 ```
@@ -115,12 +115,12 @@ Find all valid Unity input KeyCodes [here](https://docs.unity3d.com/6000.0/Docum
 Call `SetupKeybindings<T>(Mod mod)` to load your keybindings, with the type parameter as the keybindings class you made, and the mod parameter being your mod's entrypoint inheriting from `ModLoader.Mod`.
 
 ```csharp
-instance = SetupKeybindings<Keybindings>(Main.Instance);
+instance = SetupKeybindings<ExampleModKeybindings>(Main.Instance);
 ```
 
 This loads the saved keybindings.
 
-In your Main.cs, set your mod's `LoadKeybindings` action to `Keybindings.LoadKeybindings`. This causes SFS to load your keybindings when your mod loads.
+In your Main.cs, set your mod's `LoadKeybindings` action to `ExampleModKeybindings.LoadKeybindings`. This causes SFS to load your keybindings when your mod loads.
 
 e.g.
 
@@ -154,7 +154,7 @@ public override void CreateUI()
 
     CreateUI_Keybinding(
         exampleAction,
-        exampleAction.Clone(),
+        CustomKey.Clone(exampleAction),
         "Example Action"
     );
 }
@@ -180,7 +180,7 @@ For example:
 ```csharp
 CreateUI_Keybinding(
     exampleAction,
-    exampleAction.Clone(),
+    CustomKey.Clone(exampleAction),
     "Example Action"
 );
 ```
@@ -188,7 +188,7 @@ CreateUI_Keybinding(
 Here:
 
 * `exampleAction` is the current keybind.
-* `exampleAction.Clone()` is the default key.
+* `CustomKey.Clone(exampleAction)` is the default key.
 * `"Example Action"` is displayed in the settings menu.
 
 You can add multiple keybinds:
@@ -200,13 +200,13 @@ public override void CreateUI()
 
     CreateUI_Keybinding(
         firstAction,
-        firstAction.Clone(),
+        CustomKey.Clone(firstAction),
         "First Action"
     );
 
     CreateUI_Keybinding(
         secondAction,
-        secondAction.Clone(),
+        CustomKey.Clone(secondAction),
         "Second Action"
     );
 }
@@ -223,13 +223,13 @@ public override void CreateUI()
 
     CreateUI_Keybinding(
         firstAction,
-        firstAction.Clone(),
+        CustomKey.Clone(firstAction),
         "First Action"
     );
 
     CreateUI_Keybinding(
         secondAction,
-        secondAction.Clone(),
+        CustomKey.Clone(secondAction),
         "Second Action"
     );
 
@@ -239,13 +239,13 @@ public override void CreateUI()
 
     CreateUI_Keybinding(
         thirdAction,
-        thirdAction.Clone(),
+        CustomKey.Clone(thirdAction),
         "Third Action"
     );
 }
 ```
 
-### Using `Clone()`
+### Using `Clone()` (static method on `CustomKey`)
 
 `CustomKey.Clone()` creates an independent copy of a keybind.
 
@@ -254,7 +254,7 @@ This is useful when passing a keybind as its own default value:
 ```csharp
 CreateUI_Keybinding(
     exampleAction,
-    exampleAction.Clone(),
+    CustomKey.Clone(exampleAction),
     "Example Action"
 );
 ```
@@ -449,13 +449,26 @@ using UnityEngine;
 
 namespace ExampleMod;
 
-public class Keybindings : ModKeybindings
+public class ExampleModKeybindings : ModKeybindings
 {
-    private static Keybindings instance;
+    public static ExampleModKeybindings Instance { get; private set; }
 
     public CustomKey exampleAction = KeyCode.F5;
     public CustomKey exampleBuildAction = new CustomKey(KeyCode.F5, leftCtrl: true);
     public CustomKey exampleWorldAction = new CustomKey(KeyCode.F5, leftShift: true);
+
+    public static void LoadKeybindings()
+    {
+        instance = SetupKeybindings<ExampleModKeybindings>(Main.Instance);
+
+        AddOnKeyDown(
+            instance.exampleAction,
+            ExampleAction
+        );
+
+        SceneHelper.OnBuildSceneLoaded += OnBuildSceneLoaded;
+        SceneHelper.OnWorldSceneLoaded += OnWorldSceneLoaded;
+    }
 
     public override void CreateUI()
     {
@@ -463,7 +476,7 @@ public class Keybindings : ModKeybindings
 
         CreateUI_Keybinding(
             exampleAction,
-            exampleAction.Clone(),
+            CustomKey.Clone(secondAction),
             "Example Action"
         );
 
@@ -480,17 +493,14 @@ public class Keybindings : ModKeybindings
         );
     }
 
-    public static void LoadKeybindings()
+    private static void OnBuildSceneLoaded() 
     {
-        instance = SetupKeybindings<Keybindings>(Main.Instance);
+        AddOnKeyDown_Build(instance.exampleBuildAction, ExampleBuildAction)
+    }
 
-        AddOnKeyDown(
-            instance.exampleAction,
-            ExampleAction
-        );
-
-        SceneHelper.OnBuildSceneLoaded += OnBuildSceneLoaded;
-        SceneHelper.OnWorldSceneLoaded += OnWorldSceneLoaded;
+    private static void OnWorldSceneLoaded()
+    {
+        AddOnKeyDown_World(instance.exampleWorldAction, ExampleWorldAction)
     }
 
     private static void ExampleAction()
@@ -506,16 +516,6 @@ public class Keybindings : ModKeybindings
     private static void ExampleWorldAction()
     {
         // Your code here, a keybind that will always be active
-    }
-
-    private static void OnBuildSceneLoaded() 
-    {
-        AddOnKeyDown_Build(instance.exampleBuildAction, ExampleBuildAction)
-    }
-
-    private static void OnWorldSceneLoaded()
-    {
-        AddOnKeyDown_World(instance.exampleWorldAction, ExampleWorldAction)
     }
 }
 ```
@@ -548,7 +548,7 @@ namespace ExampleMod
             { "BetterKeybinds", "2.0.0" }
         };
 
-        public override Action LoadKeybindings => Keybindings.LoadKeybindings;
+        public override Action LoadKeybindings => ExampleModKeybindings.LoadKeybindings;
 
         public override void Early_Load()
         {
@@ -569,3 +569,4 @@ Once this is set up, players can configure your mod's keybinds through the norma
 ## Real Example
 To see how a published mod uses BetterKeybinds successfully, you can checkout:
 - https://github.com/kojamori/NoRocketColliders
+- https://github.com/kojamori/RocketMover
